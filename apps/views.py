@@ -5,26 +5,11 @@ from django.shortcuts import render_to_response
 from django.core.context_processors import request
 from django.contrib.redirects.models import Redirect
 
-from dajax.core import Dajax
-from dajaxice.utils import deserialize_form
 
 from apps.forms import AppForm1
 
 
-@dajaxice_register
-def send_form(request, form):
-    dajax = Dajax()
-    form = AppForm1(deserialize_form(form))
 
-    if form.is_valid():
-        dajax.remove_css_class('#my_form input', 'error')
-        dajax.alert("Form is_valid(), your username is: %s" % form.cleaned_data.get('username'))
-    else:
-        dajax.remove_css_class('#my_form input', 'error')
-        for error in form.errors:
-            dajax.add_css_class('#id_%s' % error, 'error')
-
-    return dajax.json()
 def index(request):
        return render(request,'apps/step.html')
     
