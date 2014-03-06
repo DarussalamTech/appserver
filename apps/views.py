@@ -9,7 +9,7 @@ from dajax.core import Dajax
 from dajaxice.utils import deserialize_form
 
 from apps.forms import AppForm1
-from dajaxice.decorators import dajaxice_register
+
 
 @dajaxice_register
 def send_form(request, form):
