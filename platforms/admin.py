@@ -1,5 +1,5 @@
 from django.contrib import admin
-from platforms.models import Platform,Plugin,Flurry,GoogleAnalytics,Parse,UrbanAirship,Facebook
+from platforms.models import Platform,Plugin,Flurry,GoogleAnalytics,Parse,Facebook,GooglePlus
 # Register your models here.
 class PlatformAdmin(admin.ModelAdmin):
         pass
@@ -11,7 +11,7 @@ class GoogleAnalyticsAdmin(admin.ModelAdmin):
         pass
 class ParseAdmin(admin.ModelAdmin):
         pass
-class UrbanAirshipAdmin(admin.ModelAdmin):
+class GooglePlusAdmin(admin.ModelAdmin):
         pass
 class FacebookAdmin(admin.ModelAdmin):
         pass
@@ -26,4 +26,4 @@ admin.site.register(Flurry,FlurryAdmin )
 admin.site.register(GoogleAnalytics,GoogleAnalyticsAdmin )
 admin.site.register(Parse,ParseAdmin )
 admin.site.register(Plugin,PluginAdmin )
-admin.site.register(UrbanAirship,UrbanAirshipAdmin )
+admin.site.register(GooglePlus,GooglePlusAdmin )

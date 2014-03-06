@@ -1,7 +1,8 @@
  {% extends "admin/base_site.html" %}
 
 
-<div class="breadcrumbs"></div><!--  -->
+<div class="breadcrumbs"></div>
+<!--  -->
 
 {% block content %}
 
@@ -14,7 +15,7 @@
 			<div class="page-header">
 				<h1>Create New Application</h1>
 			</div>
-
+			<div id='token1' display='none'>{% csrf_token %}</div>
 			<div id="rootwizard">
 				<div class="navbar">
 					<div class="navbar-inner">
@@ -23,7 +24,7 @@
 								<li><a href="#tab1" data-toggle="tab">App Info</a></li>
 								<li><a href="#tab2" data-toggle="tab">App Details</a></li>
 								<li><a href="#tab3" data-toggle="tab">App Features</a></li>
-							
+
 							</ul>
 						</div>
 					</div>
@@ -33,32 +34,21 @@
 				</div>
 				<div class="tab-content">
 					<div class="tab-pane" id="tab1" align="center">
-						<link href="{{ MEDIA_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
-						<script src="{{ MEDIA_URL }}js/bootstrap.min.js"></script>
-						{% if form.errors %} 
-						{% endif %}
-						<form action="" method="post" id="my_form" accept-charset="utf-8">
+						<link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet"
+							media="screen">
+						<script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+						<div class="basic">
 
+							
+							{% include "admin/partials/form.html" %}
 
-							{% csrf_token %} {{ appform1.as_p }} 
-							<input class="previous" type="button"
-								value="Continue" onclick="send_form();" />
-								
-
-
-						</form>
+						</div>
 					</div>
 					<div class="tab-pane" id="tab2" align="center">
-						
-								{% csrf_token %} {{ appform2.as_p }} <input class="previous" type="button"
-								value="Continue" />
-						
-					</div>
-					<div class="tab-pane" id="tab3"align="center">
-						
-								{% csrf_token %} {{ appform3.as_p }} <input class="previous" type="button"
-								value="Continue" /></div>
-				<!-- 	<div class="tab-pane" id="tab4">4</div>
+						{% include "admin/partials/wizardform2.html" %}</div>
+					<div class="tab-pane" id="tab3" align="center">
+					{% include	"admin/partials/wizardform3.html" %}</div>
+					<!-- 	<div class="tab-pane" id="tab4">4</div>
 					<div class="tab-pane" id="tab5">5</div>
 					<div class="tab-pane" id="tab6">6</div>
 					<div class="tab-pane" id="tab7">7</div> -->
@@ -84,50 +74,99 @@
 	clear: both
 }
 </style>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="{{STATIC_URL}}js/jquery.js"></script>
 <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
 <script src="{{STATIC_URL}}js/jquery.bootstrap.wizard.js"></script>
 <script src="{{STATIC_URL}}js/prettify.js"></script>
-<script src="{{STATIC_URL}}dajax/jquery.dajax.core.js"></script>
-<!-- <script src="{{STATIC_URL}}js/dj.js"></script> -->
+<!-- <script src="http://code.jquery.com/jquery-1.7.js"></script> -->
 <script>
+	function sendforms(){
+		
+		$.ajax({
+			url : "{% url 'admin:appajaxstep3' %}",
+			//dataType : 'json',
+		/* 	data : {'form1': JSON.stringify($('#my_form').serialize()),
+					'form2':JSON.stringify($('#my_form2').serialize()),
+					'form3':JSON.stringify($('#my_form3').serialize()),
+				'csrfmiddlewaretoken':$("#token3 input").val() },  */
+	 		/* data :  'form1='+$('#my_form').serialize()+
+		 			'&form2='+$('#my_form2').serialize()+
+					'&form3='+$('#my_form3').serialize()+ 
+				'&csrfmiddlewaretoken='+$("#token3 input").val() ,  */
+		
+		  data : $('#my_form').serialize()+"&"+$('#my_form2').serialize()+"&"+$('#my_form3').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val(),		
+					
+			type : 'post'
+		}).done(function(response) {
+			//$form.replace(response);
+			alert('here');
+			 str = new String(response);
+			
+			if (str.search("errorlist") != -1){				
+				$('.wizard li.previous').click();
+				$('#tab3').html(response);
+				}
+			else 
+				{
+					/* alert (response); */
+					$('.wizard li.previous').click();
+					/* /* Redirect('http://127.0.0.1:8000/admin/');  */
+				} 
 
+		}).fail(
+				function(jqXHR, textStatus, errorThrown) { 
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown);
+				} 		
+		);
+	}
 	$(document).ready(function() {
 		$('#rootwizard').bootstrapWizard({
+
 			onNext : function(tab, navigation, index) {
-				if(index==1) {
+				if (index == 1) {
 					$.ajax({
-						url: "{% url 'admin:appajax' %}",
-						data: $('#my_form').serialize(),
-						type: 'post'
-						}).done(function(response) {
-						/* $( this ).addClass( "done" ); */
-						$('#my_form').val(response);
-						alert(response);
+						url : "{% url 'admin:appajax' %}",
+						//dataType : 'json',
+						//data : $('#form').serialize() + "&par1=1&par2=2&par3=232"
+						data : $('#my_form').serialize()+'&csrfmiddlewaretoken='+ $("#token1 input").val() ,
+						type : 'post'
+					}).done(function(response) {
+						//$form.replace(response);
 						
-						});
-					
-				/* 	// Make sure we entered the name
-					if(!$('#id_name').val()) {
-						alert('You must enter App name');
-						$('#name').focus();
-						return false;
-					}
-					else if(!$('#id_icon').val()) {
-						alert('You must enter the icon');
-						$('#name').focus();
-						return false;
-					}
-					else if(!$('#id_description').val()) {
-						alert('You must enter Description');
-						$('#name').focus();
-						return false;
-					} */
+						str = new String(response);
+						if (str.search("errorlist") != -1 )
+							$('.wizard li.previous').click();
+							$('#tab1').html(response);
+
+					});
+
 				}
+				if (index == 2) {
+					$.ajax({
+						url : "{% url 'admin:appajaxstep2' %}",
+						//dataType : 'json',
+						data : $('#my_form2').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val() ,
+						type : 'post'
+					}).done(function(response) {
+						//$form.replace(response);
+						console.log(str);
+						str = new String(response);
+						if (str.search("This field is required.") != -1)
+							$('.wizard li.previous').click(); 
+							$('#tab2').html(response);
+
+					});
+
+				}
+				
+				
+
 				
 
 				// Set the name for the next tab
-			/* 	$('#tab3').html('Hello, ' + $('#name').val()); */
+				/* 	$('#tab3').html('Hello, ' + $('#name').val()); */
 
 			},
 			onTabShow : function(tab, navigation, index) {
