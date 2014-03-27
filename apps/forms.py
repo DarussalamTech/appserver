@@ -2,33 +2,53 @@
 
 from django import forms
 from apps.models import App, AppPlugin
-from platforms.models import Platform,Plugin,AppPlatform
+from platforms.models import Platform,Plugin,AppPlatform,Flurry,Parse
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models.base import Model
 from time import timezone
 
 class PlatformForm(forms.ModelForm):
+    
     class Meta:
         model = Platform
         fields = ['name']
+class FlurryForm(forms.ModelForm):
+    class Meta:
+        model = Flurry
+        fields = ['apikey']
+        exclude=['app_platform_id']
+        
+    def __init__(self, *args, **kwargs):
+        super(FlurryForm, self).__init__(*args, **kwargs)
+class ParseForm(forms.ModelForm):
+    class Meta:
+        model = Parse
+        fields = ['client_key','application_id']
+#         exclude=['app_platform_id']
+        
+    def __init__(self, *args, **kwargs):
+        super(FlurryForm, self).__init__(*args, **kwargs)
+        #setting errors
+
+        for f in self.errors:
+            self.fields[f].widget.attrs.update({'class': 'errorlist'})
 class AppForm1(forms.ModelForm):
-    
     class Meta:
         model = App
         fields = ['name','description']
+        
     def __init__(self, *args, **kwargs):
         super(AppForm1, self).__init__(*args, **kwargs)
         #setting errors
 
         for f in self.errors:
-            self.fields[f].widget.attrs.update({'class': 'error'})
+            self.fields[f].widget.attrs.update({'class': 'errorlist'})
 #         fields = ['name', 'description']
 class AppForm2(forms.ModelForm):
 #    forms.ModelMultipleChoiceField(queryset=Platform.objects.all(), widget=FilteredSelectMultiple("verbose name", is_stacked=False))
-    
 
     class Meta:
-          
+        
             
         widgets = {
                 'platforms' : forms.CheckboxSelectMultiple,
@@ -37,26 +57,40 @@ class AppForm2(forms.ModelForm):
             
         model = App
         fields = ['category','platforms', 'devices','playstore_url','itunes_url']
+    def __init__(self, *args, **kwargs):
+        super(AppForm2, self).__init__(*args, **kwargs)
+        #setting errors
+
+        for f in self.errors:
+            self.fields[f].widget.attrs.update({'class': 'errorlist'})
 #     def __init__(self, *args, **kwargs):
 #         super(AppForm2, self).__init__(*args, **kwargs)
 
 #         self.fields['platforms'].widget = forms.CheckboxSelectMultiple()
 class AppForm3(forms.ModelForm):
 #     plugin=forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple, queryset=Plugin.objects.all(), required=False)
+  
     class Meta:
         widgets = {
                 'plugins' : forms.CheckboxSelectMultiple,
             }
         model = App
         fields = ['plugins']
+    def __init__(self, *args, **kwargs):
+        super(AppForm3, self).__init__(*args, **kwargs)
+        #setting errors
+
+        for f in self.errors:
+            self.fields[f].widget.attrs.update({'class': 'errorlist'})
 class AppForm(forms.ModelForm):
     
     class Meta:
+        
         model=App  
-       
+        exclude = ['create_user', ]
         fields=['name','description','category','platforms', 'devices','playstore_url','itunes_url','plugins']
  
-    def save(self, *args, **kw):
+    def save(self,request, *args, **kw):
 #           commentModel.content_type_id = 47
 #         commentModel.object_pk = self.cleaned_data.get("object_pk")
 #         commentModel.site_id = 1
@@ -69,6 +103,9 @@ class AppForm(forms.ModelForm):
 #         commentModel.ip_address = socket.gethostbyname(socket.gethostname())
 #         commentModel.save()
         
+      
+            
+       
         instance = App()
         instance.name = self.cleaned_data.get('name')
         instance.description = self.cleaned_data.get('description')
@@ -81,17 +118,20 @@ class AppForm(forms.ModelForm):
 #         instance.plugins = self.cleaned_data.get('plugins')
 #         print instance.name
 #        instance.save()
-    
+       
+        instance.create_user=request.user
+        
         instance.save()
-      
         for key in self.cleaned_data['platforms']:
                 instance.platforms.add(key)
+                print instance.platforms.db_index
         for key in self.cleaned_data['devices']:
                 instance.devices.add(key)
         for key in self.cleaned_data['plugins']:
+                print key
                 instance.plugins.add(key)
                 
-                return True;
+        return True;
 
           
 

@@ -1,1 +1,104 @@
-hello
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+
+
+<style>
+<!--
+.tab-content{
+background-color: #F5F5F5 !important;
+}
+
+.img-polaroid {
+    background-color: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 4px;
+    width: 188px;
+}
+h4 {
+    font-size: 17.5px;
+    text-align: center;
+    margin-top:0;
+}
+.label, .badge {
+    background-color: #999999;
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 21.844px;
+    font-weight: bold;
+    line-height: 26px;
+    padding: 2px 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: 88px;
+}
+.label1{
+    color: #999999;
+    display: inline-block;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 26px;
+    padding: 2px 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: 88px;
+}
+.downloads{
+	
+  	
+    text-align: center;
+}
+.downloads-label{
+	margin-top: 45px;
+    text-align: center;
+}
+.heading{
+}
+.dash{
+
+}
+-->
+</style>
+<button type="button" class="btn btn-default btn-lg">
+  <span class="glyphicon glyphicon-star"></span> Star
+</button>
+
+<div class='heading'>
+<span class="glyphicon glyphicon-dashboard"></span> 
+<h1 class='dash'>Dashboard</h1>
+</div>
+
+<input type="hidden" name="csrfmiddlewaretoken" value="SOME_TOKEN">{% csrf_token %}</input>
+<div class='container' > 
+{% for obj in app %}
+
+
+
+<div class="thumbnail clearfix" style="background-color: #F5F5F5 !important; margin-top: 10px; width:200px; height: 346px;">
+
+<img src="{{MEDIA_URL}}/media/{{ obj.icon}}" class="img-polaroid"/><br/>
+<h4 class="" style="color: #999999;">{{ obj.name }} </h4>
+<div class='downloads-label'>
+<small class="label1 muted">Downloads </small>
+<small class="label1 muted">Sessions </small>
+</div>
+<div class='downloads'>
+	
+	<span class="label">{{downloads}} </span>
+	<span class="label">{{sessions}} </span>
+</div>
+</div>
+{% endfor %}
+</div>
+
+
+<script>
+$('document').ready(function(){
+	$('.row-fluid .navbar .navbar-inner').hide();
+});
+</script>
+{% endblock %}

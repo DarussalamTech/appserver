@@ -37,8 +37,7 @@ var bootstrapWizardCreate = function(element, options) {
 
 		// See if we're currently in the first/last then disable the previous and last buttons
 		$($settings.previousSelector, element).toggleClass('disabled', (obj.firstIndex() >= obj.currentIndex()));
-		$($settings.nextSelector, element).toggleClass('disabled', (obj.currentIndex() >= obj.navigationLength()));
-
+		$($settings.nextSelector, element).toggleClass('', (obj.currentIndex() >= obj.navigationLength()));
 		// We are unbinding and rebinding to ensure single firing and no double-click errors
 		obj.rebindClick($($settings.nextSelector, element), obj.next);
 		obj.rebindClick($($settings.previousSelector, element), obj.previous);

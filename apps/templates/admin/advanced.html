@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+
+
+{% block content %}
+
+<h1>{{ original.name }}</h1>
+
+<div id='token1' display='none'>{% csrf_token %}</div>
+<div class="tabbable tabs-left">
+	<ul class="nav nav-tabs">
+		<li class="active"><a data-toggle="tab" href="#lA">App Settings</a></li>
+		<li class=""><a data-toggle="tab" href="#lB">App Plugins</a></li>
+		<li class=""><a data-toggle="tab" href="#lC">App Push</a>
+		<li class=""><a data-toggle="tab" href="#lD">App Analytics</a>
+		<li class=""><a data-toggle="tab" href="#lE">App Users</a>
+		<li class=""><a data-toggle="tab" href="#lF">Reward</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div id="lA" class="tab-pane active">
+			{% include "admin/change_form.html" %}
+			{% block field_sets %}{{ block.super }}
+ 			{% endblock %}
+		</div>
+		<div id="lB" class="tab-pane">
+			<div class="tabbable tabs-left">
+				<ul class="nav nav-tabs">
+						
+						{% for objs  in  original.plugins.all%}
+						
+							  <li class=""><a data-toggle="tab" href="#l{{ objs.name }}">{{ objs.name }}</a></li>
+						{% endfor %}
+						
+					
+				</ul>
+				<div class="tab-content">
+						{% for obj  in  original.plugins.all%}
+						
+					<div id="l{{ obj.name }}" class="tab-pane">
+
+						<div class="tabbable">
+							<!-- Only required for left/right tabs -->
+							<ul class="nav nav-tabs">
+				{% for objs in original.platforms.all %}
+
+								<li class=""><a href="#l{{ obj.name }}{{ objs.name }}d"  data-toggle="tab">{{ objs.name }}</a></li>
+							{% endfor %}
+
+							</ul>
+
+
+						</div>
+						{% for objs  in  original.platforms.all%}
+							<div class="tab-pane" id="l{{ obj.name }}{{ objs.name }}d">
+							
+							<form id="l{{ obj.name }}{{ objs.name }}" class="form-horizontal" method="post">
+							{% if obj.name == 'Flurry' %}
+							
+								{{ parse.as_p }}
+							{% endif %}
+							{% if obj.name == 'Parse' %}
+							
+								{{ parse.as_p }}
+							{% endif %}
+							</form>
+							
+							</div>
+						{% endfor %}
+
+					
+				</div>
+				{% endfor %}
+			</div>
+			</div>
+			</div>
+			<div id="lC" class="tab-pane">
+			</div>
+			<div id="lD" class="tab-pane">
+			</div>
+			<div id="lE" class="tab-pane">
+			</div>
+			<div id="lF" class="tab-pane">
+			</div>
+	
+	</div>
+</div>
+</div>
+
+<script>
+$('document').ready(function(){
+	$('.row-fluid .navbar .navbar-inner').hide();
+	getform();
+});
+function getform(){
+	$.ajax({
+		url : "{% url 'admin:appajax4' %}",
+	
+	  	data : 'csrfmiddlewaretoken='+ $("#token1 input").val() ,		
+				
+		type : 'post'
+	}).done(function(response) {
+		//$form.replace(response);
+		 str = new String(response);
+		
+			
+			$('#lFlurryAndroidd').html(response);
+			$('#lParseAndroidd').html(response);
+			
+	
+
+	}).fail(
+			function(jqXHR, textStatus, errorThrown) { 
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			} 		
+	);
+	
+}
+
+
+</script>
+{% endblock %}

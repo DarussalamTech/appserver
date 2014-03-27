@@ -2,7 +2,10 @@ from django.conf.urls import *
 from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
+from apps.admin import AppAdmin
 from apps import views
+from django.core import urlresolvers
+import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -16,3 +19,14 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 )
+
+
+if settings.DEBUG:
+    # Serve static
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
+
+    # Serve Media
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT }),
+    )

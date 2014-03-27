@@ -51,9 +51,9 @@ var bootstrapWizardCreate = function(element, options) {
 	};
 
 	this.next = function(e) {
-
 		// If we clicked the last then dont activate this
 		if(element.hasClass('last')) {
+			
 			return false;
 		}
 
@@ -64,6 +64,7 @@ var bootstrapWizardCreate = function(element, options) {
 		// Did we click the last button
 		$index = obj.nextIndex();
 		if($index > obj.navigationLength()) {
+			
 		} else {
 			$navigation.find(baseItemSelector + ':eq('+$index+') a').tab('show');
 		}
@@ -100,12 +101,15 @@ var bootstrapWizardCreate = function(element, options) {
 
 	};
 	this.last = function(e) {
+		
 		if($settings.onLast && typeof $settings.onLast === 'function' && $settings.onLast($activeTab, $navigation, obj.lastIndex())===false){
+			
 			return false;
 		}
 
 		// If the element is disabled then we won't do anything
 		if(element.hasClass('disabled')) {
+			
 			return false;
 		}
 		$navigation.find(baseItemSelector + ':eq('+obj.navigationLength()+') a').tab('show');
@@ -117,6 +121,7 @@ var bootstrapWizardCreate = function(element, options) {
 		return 0;
 	};
 	this.lastIndex = function() {
+		
 		return obj.navigationLength();
 	};
 	this.getIndex = function(e) {
@@ -129,6 +134,7 @@ var bootstrapWizardCreate = function(element, options) {
 		return $navigation.find(baseItemSelector).index($activeTab) - 1;
 	};
 	this.navigationLength = function() {
+		
 		return $navigation.find(baseItemSelector).length - 1;
 	};
 	this.activeTab = function() {
@@ -148,6 +154,7 @@ var bootstrapWizardCreate = function(element, options) {
 	};
 	this.disable = function(index) {
 		$navigation.find(baseItemSelector + ':eq('+index+')').addClass('disabled');
+	
 	};
 	this.enable = function(index) {
 		$navigation.find(baseItemSelector + ':eq('+index+')').removeClass('disabled');

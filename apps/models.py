@@ -1,13 +1,13 @@
 from django.db import models
 from django.template.defaultfilters import default
 from platforms.models import Platform,Plugin
-
+from django.core.validators import URLValidator
 class Category(models.Model):
     cat_name=models.CharField(max_length=100)
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.cat_name
 class Clients(models.Model):
-    email=models.EmailField()
+    email=models.EmailField(blank=True)
     device_id=models.IntegerField(default=0)
     
 class DeviceType(models.Model):
@@ -18,19 +18,20 @@ class DeviceType(models.Model):
     
 class App(models.Model):
     name=models.CharField(max_length=100,unique=True)
-    icon=models.FileField(upload_to='/%Y_%m_%d/')
+    icon=models.FileField(upload_to="media/%Y/%m/%d" ,null=True)
     pub_date = models.DateTimeField('Created', auto_now=True)
     description=models.TextField()
     category=models.ForeignKey(Category)
-    playstore_url=models.CharField(max_length=500)
-    itunes_url=models.CharField(max_length=500)
+    
+    playstore_url=models.URLField(validators=[URLValidator()])
+    itunes_url=models.URLField(validators=[URLValidator()])
     platforms = models.ManyToManyField(Platform)
     clients = models.ManyToManyField(Clients)
     devices = models.ManyToManyField(DeviceType)
     plugins=models.ManyToManyField(Plugin)
-    
+    create_user=models.ForeignKey('auth.User')
     def __unicode__(self):  # Python 3: def __str__(self):
-        return u"%s %s" % (self.name, self.icon,self.description,self.category
+        return u"%s %s %s %s %s %s %s %s %s %s" % (self.name, self.icon,self.pub_date,self.description,self.category
                            ,self.playstore_url,self.itunes_url,self.platforms,self.clients,self.plugins)
     
 #         model = App

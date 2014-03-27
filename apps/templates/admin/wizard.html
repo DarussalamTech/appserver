@@ -1,5 +1,20 @@
- {% extends "admin/base_site.html" %}
+ {% extends "admin/base.html" %}
+ {% block extrahead %}{{ block.super }}
+{% endblock %}
+{% block breadcrumbs %}
 
+<ul class='breadcrumb'>
+{{ block.super }} 
+<li>
+<a href="/admin/">Home</a>
+<span class="divider">/</span></li>
+<li>
+<a href="../">Apps</a>
+			
+<span class="divider">/</span></li>
+<li> Creating Application</li>
+{% endblock %}
+</ul>
 
 <div class="breadcrumbs"></div>
 <!--  -->
@@ -9,7 +24,6 @@
 <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet">
 <link href="{{STATIC_URL}}css/prettify.css" rel="stylesheet">
 <div class='container'>
-
 	<div class="span12">
 		<section id="wizard">
 			<div class="page-header">
@@ -17,7 +31,7 @@
 			</div>
 			<div id='token1' display='none'>{% csrf_token %}</div>
 			<div id="rootwizard">
-				<div class="navbar">
+				<div class="navbar ">
 					<div class="navbar-inner">
 						<div class="container">
 							<ul>
@@ -53,10 +67,10 @@
 					<div class="tab-pane" id="tab6">6</div>
 					<div class="tab-pane" id="tab7">7</div> -->
 					<ul class="pager wizard">
-						<li class="previous first" style="display: none;"><a href="#">First</a></li>
-						<li class="previous"><a href="#">Previous</a></li>
-						<li class="next last" style="display: none;"><a href="#">Last</a></li>
-						<li class="next"><a href="#">Next</a></li>
+						<li class="previous first " style="display: none;"><a class="btn btn-primary disabled" href="#">First</a></li>
+						<li class="previous"><a class="btn btn-primary" href="#">Previous</a></li>
+						<li class="next" style="display: none;"><a href="#"  class='btn btn-primary '>Last</a></li>
+						<li id='lastt' class="next"><a class="btn btn-primary" href="#">Next</a></li>
 					</ul>
 				</div>
 			</div>
@@ -73,6 +87,41 @@
 .clear {
 	clear: both
 }
+
+</style>
+<style>
+
+
+ul, ol {
+    list-style: none outside none !important;
+    margin: 0 0 10px 25px;
+    padding: 0;
+}
+.form-horizontal .control-label {
+    float: left;
+    padding-top: 5px;
+    text-align: right;
+    width: 305px !important;
+}
+label {
+	display: flex !important;
+    margin-bottom: 5px;
+    margin-left: 190px !important;
+    width: 163px;
+}
+.tab-content {
+    overflow: hidden !important;
+}
+
+.form-horizontal .controls {
+    margin-right: 389px;
+}
+.pager li > a:hover, .pager li > a:focus{
+ background-color: #006DCC !important;
+}
+.tab-content{
+background-color: #F5F5F5 !important;
+}
 </style>
 <script src="{{STATIC_URL}}js/jquery.js"></script>
 <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
@@ -80,37 +129,29 @@
 <script src="{{STATIC_URL}}js/prettify.js"></script>
 <!-- <script src="http://code.jquery.com/jquery-1.7.js"></script> -->
 <script>
+$('document').ready(function(){
+	$('.row-fluid .navbar .navbar-inner').hide();
+});
 	function sendforms(){
 		
 		$.ajax({
 			url : "{% url 'admin:appajaxstep3' %}",
-			//dataType : 'json',
-		/* 	data : {'form1': JSON.stringify($('#my_form').serialize()),
-					'form2':JSON.stringify($('#my_form2').serialize()),
-					'form3':JSON.stringify($('#my_form3').serialize()),
-				'csrfmiddlewaretoken':$("#token3 input").val() },  */
-	 		/* data :  'form1='+$('#my_form').serialize()+
-		 			'&form2='+$('#my_form2').serialize()+
-					'&form3='+$('#my_form3').serialize()+ 
-				'&csrfmiddlewaretoken='+$("#token3 input").val() ,  */
 		
 		  data : $('#my_form').serialize()+"&"+$('#my_form2').serialize()+"&"+$('#my_form3').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val(),		
 					
 			type : 'post'
 		}).done(function(response) {
 			//$form.replace(response);
-			alert('here');
 			 str = new String(response);
 			
 			if (str.search("errorlist") != -1){				
-				$('.wizard li.previous').click();
+				
 				$('#tab3').html(response);
 				}
 			else 
 				{
-					/* alert (response); */
-					$('.wizard li.previous').click();
-					/* /* Redirect('http://127.0.0.1:8000/admin/');  */
+					
+					window.location.href="{% url 'admin:app-dashboard' %}";
 				} 
 
 		}).fail(
@@ -120,50 +161,82 @@
 					console.log(errorThrown);
 				} 		
 		);
+	 return false
+	}
+	function ajax_call1(){
+		$.ajax({
+			url : "{% url 'admin:appajax' %}",
+			async:false,
+			//dataType : 'json',
+			//data : $('#form').serialize() + "&par1=1&par2=2&par3=232"
+			data : $('#my_form').serialize()+'&csrfmiddlewaretoken='+ $("#token1 input").val() ,
+			type : 'post'
+		}).done(function(response) {
+			//$form.replace(response);
+			
+			str = new String(response);
+			if (str.search("errorlist") == -1 ){
+				
+				console.log('ajax');
+				
+				bool= true;
+			}
+			else {
+				
+			$('#tab1').html(response);
+			    bool= false;	
+				
+			}
+		})
+	return bool;
+	}
+	function ajax_call2(){
+		
+		$.ajax({
+			url : "{% url 'admin:appajaxstep2' %}",
+			async:false,
+			//dataType : 'json',
+			data : $('#my_form2').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val() ,
+			type : 'post'
+		}).done(function(response) {
+			//$form.replace(response);
+			str = new String(response);
+			if (str.search("errorlist") == -1){
+				bool= true;
+			}
+			else{
+				
+				$('#tab2').html(response);
+				
+				bool= false;
+			}
+		});
+	return bool;
 	}
 	$(document).ready(function() {
 		$('#rootwizard').bootstrapWizard({
-
+		
 			onNext : function(tab, navigation, index) {
+				
 				if (index == 1) {
-					$.ajax({
-						url : "{% url 'admin:appajax' %}",
-						//dataType : 'json',
-						//data : $('#form').serialize() + "&par1=1&par2=2&par3=232"
-						data : $('#my_form').serialize()+'&csrfmiddlewaretoken='+ $("#token1 input").val() ,
-						type : 'post'
-					}).done(function(response) {
-						//$form.replace(response);
-						
-						str = new String(response);
-						if (str.search("errorlist") != -1 )
-							$('.wizard li.previous').click();
-							$('#tab1').html(response);
-
-					});
-
+			
+					return ajax_call1();
 				}
+				
+				
 				if (index == 2) {
-					$.ajax({
-						url : "{% url 'admin:appajaxstep2' %}",
-						//dataType : 'json',
-						data : $('#my_form2').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val() ,
-						type : 'post'
-					}).done(function(response) {
-						//$form.replace(response);
-						console.log(str);
-						str = new String(response);
-						if (str.search("This field is required.") != -1)
-							$('.wizard li.previous').click(); 
-							$('#tab2').html(response);
-
-					});
-
+					
+					return ajax_call2();
+					
+				}
+				
+				if (index==3){
+				
+					return sendforms();
 				}
 				
 				
-
-				
+			//return false;
 
 				// Set the name for the next tab
 				/* 	$('#tab3').html('Hello, ' + $('#name').val()); */
@@ -173,9 +246,15 @@
 				var $total = navigation.find('li').length;
 				var $current = index + 1;
 				var $percent = ($current / $total) * 100;
+				
 				$('#rootwizard').find('.bar').css({
 					width : $percent + '%'
 				});
+				if ($current === 3 ){
+					
+					console.log($('#lastt'));
+					$('#lastt').removeClass('disabled')
+				}
 			}
 		});
 		window.prettyPrint && prettyPrint()

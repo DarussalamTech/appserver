@@ -25,7 +25,8 @@ class Flurry(models.Model):
     app_platform_id=models.ForeignKey(AppPlatform)
     store_id=models.CharField(max_length=400)
     apikey=models.CharField(max_length=200)
-    
+    def __unicode__(self):  # Python 3: def __str__(self):
+        return u"%s %s " % (self.app_platform_id, self.apikey)
 # class UrbanAirship(models.Model):
 #     app_platform_id=models.ForeignKey(AppPlatform)
 #     app_UrbanAirship_key=models.CharField(max_length=200) 
@@ -34,6 +35,8 @@ class Parse(models.Model):
     app_platform_id=models.ForeignKey(AppPlatform)
     application_id=models.CharField(max_length=200) 
     client_key =models.CharField(max_length=200) 
+    def __unicode__(self):  # Python 3: def __str__(self):
+        return u"%s %s " % (self.application_id, self.client_key)
 class Facebook(models.Model):
     app_platform_id=models.ForeignKey(AppPlatform)
     app_id=models.CharField(max_length=200)
