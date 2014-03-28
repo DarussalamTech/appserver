@@ -124,7 +124,7 @@ class AppForm(forms.ModelForm):
         instance.save()
         for key in self.cleaned_data['platforms']:
                 instance.platforms.add(key)
-                print instance.platforms.db_index
+                #print instance.platforms.db_index
         for key in self.cleaned_data['devices']:
                 instance.devices.add(key)
         for key in self.cleaned_data['plugins']:

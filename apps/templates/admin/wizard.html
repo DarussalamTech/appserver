@@ -144,9 +144,6 @@ var appWizard = {
 				
 				str = new String(response);
 				if (str.search("errorlist") == -1 ){
-					
-					console.log('ajax');
-					
 					bool= true;
 				}
 				else {
@@ -195,18 +192,13 @@ var appWizard = {
 					}
 				else 
 					{
-						
 						window.location.href="{% url 'admin:app-dashboard' %}";
 					} 
 
-			}).fail(
-					function(jqXHR, textStatus, errorThrown) { 
-						console.log(jqXHR);
-						console.log(textStatus);
-						console.log(errorThrown);
-					} 		
-			);
-			 return false
+			}).fail(function(jqXHR, textStatus, errorThrown) { 
+
+			});
+			 return false;
 		}
 }
 
@@ -232,10 +224,7 @@ $(document).ready(function() {
 			if(clickedIndex>index){
 				return false;
 			}
-			//console.log(tab);
-			
 		},
-	
 		onTabShow : function(tab, navigation, index) {
 			var $total = navigation.find('li').length;
 			var $current = index + 1;
@@ -245,8 +234,6 @@ $(document).ready(function() {
 				width : $percent + '%'
 			});
 			if ($current === 3 ){
-				
-				console.log($('#lastt'));
 				$('#lastt').removeClass('disabled')
 			}
 		}
