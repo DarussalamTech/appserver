@@ -52,10 +52,7 @@
 							media="screen">
 						<script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
 						<div class="basic">
-
-							
-							{% include "admin/partials/form.html" %}
-
+							{% include "admin/partials/wizardform1.html" %}
 						</div>
 					</div>
 					<div class="tab-pane" id="tab2" align="center">
@@ -106,7 +103,7 @@ ul, ol {
 label {
 	display: flex !important;
     margin-bottom: 5px;
-    margin-left: 190px !important;
+    margin-left: 50px !important;
     width: 163px;
 }
 .tab-content {
@@ -132,132 +129,129 @@ background-color: #F5F5F5 !important;
 $('document').ready(function(){
 	$('.row-fluid .navbar .navbar-inner').hide();
 });
-	function sendforms(){
-		
-		$.ajax({
-			url : "{% url 'admin:appajaxstep3' %}",
-		
-		  data : $('#my_form').serialize()+"&"+$('#my_form2').serialize()+"&"+$('#my_form3').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val(),		
-					
-			type : 'post'
-		}).done(function(response) {
-			//$form.replace(response);
-			 str = new String(response);
-			
-			if (str.search("errorlist") != -1){				
+//app wizard work here
+var appWizard = {
+		step1 : function (){
+			$.ajax({
+				url : "{% url 'admin:wizard_step1' %}",
+				async:false,
+				//dataType : 'json',
+				//data : $('#form').serialize() + "&par1=1&par2=2&par3=232"
+				data : $('#my_form').serialize()+'&csrfmiddlewaretoken='+ $("#token1 input").val() ,
+				type : 'post'
+			}).done(function(response) {
+				//$form.replace(response);
 				
-				$('#tab3').html(response);
-				}
-			else 
-				{
+				str = new String(response);
+				if (str.search("errorlist") == -1 ){
 					
-					window.location.href="{% url 'admin:app-dashboard' %}";
-				} 
+					console.log('ajax');
+					
+					bool= true;
+				}
+				else {
+					
+				$('#tab1').html(response);
+				    bool= false;	
+					
+				}
+			})
+			return bool;
+		},
+		step2 : function (){
+			$.ajax({
+				url : "{% url 'admin:wizard_step2' %}",
+				async:false,
+				//dataType : 'json',
+				data : $('#my_form2').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val() ,
+				type : 'post'
+			}).done(function(response) {
+				//$form.replace(response);
+				str = new String(response);
+				if (str.search("errorlist") == -1){
+					bool= true;
+				}
+				else{
+					
+					$('#tab2').html(response);
+					
+					bool= false;
+				}
+			});
+			return bool;
+		},
+		step3: function (){
+			$.ajax({
+			  url : "{% url 'admin:wizard_step3' %}",			
+			  data : $('#my_form').serialize()+"&"+$('#my_form2').serialize()+"&"+$('#my_form3').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val(),		
+			  type : 'post'
+			}).done(function(response) {
+				//$form.replace(response);
+				 str = new String(response);
+				
+				if (str.search("errorlist") != -1){				
+					
+					$('#tab3').html(response);
+					}
+				else 
+					{
+						
+						window.location.href="{% url 'admin:app-dashboard' %}";
+					} 
 
-		}).fail(
-				function(jqXHR, textStatus, errorThrown) { 
-					console.log(jqXHR);
-					console.log(textStatus);
-					console.log(errorThrown);
-				} 		
-		);
-	 return false
-	}
-	function ajax_call1(){
-		$.ajax({
-			url : "{% url 'admin:appajax' %}",
-			async:false,
-			//dataType : 'json',
-			//data : $('#form').serialize() + "&par1=1&par2=2&par3=232"
-			data : $('#my_form').serialize()+'&csrfmiddlewaretoken='+ $("#token1 input").val() ,
-			type : 'post'
-		}).done(function(response) {
-			//$form.replace(response);
-			
-			str = new String(response);
-			if (str.search("errorlist") == -1 ){
-				
-				console.log('ajax');
-				
-				bool= true;
-			}
-			else {
-				
-			$('#tab1').html(response);
-			    bool= false;	
-				
-			}
-		})
-	return bool;
-	}
-	function ajax_call2(){
-		
-		$.ajax({
-			url : "{% url 'admin:appajaxstep2' %}",
-			async:false,
-			//dataType : 'json',
-			data : $('#my_form2').serialize()+'&csrfmiddlewaretoken='+$("#token1 input").val() ,
-			type : 'post'
-		}).done(function(response) {
-			//$form.replace(response);
-			str = new String(response);
-			if (str.search("errorlist") == -1){
-				bool= true;
-			}
-			else{
-				
-				$('#tab2').html(response);
-				
-				bool= false;
-			}
-		});
-	return bool;
-	}
-	$(document).ready(function() {
-		$('#rootwizard').bootstrapWizard({
-		
-			onNext : function(tab, navigation, index) {
-				
-				if (index == 1) {
-			
-					return ajax_call1();
-				}
-				
-				
-				if (index == 2) {
-					
-					return ajax_call2();
-					
-				}
-				
-				if (index==3){
-				
-					return sendforms();
-				}
-				
-				
-			//return false;
+			}).fail(
+					function(jqXHR, textStatus, errorThrown) { 
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+					} 		
+			);
+			 return false
+		}
+}
 
-				// Set the name for the next tab
-				/* 	$('#tab3').html('Hello, ' + $('#name').val()); */
-
-			},
-			onTabShow : function(tab, navigation, index) {
-				var $total = navigation.find('li').length;
-				var $current = index + 1;
-				var $percent = ($current / $total) * 100;
+$(document).ready(function() {
+	$('#rootwizard').bootstrapWizard({
+	
+		onNext : function(tab, navigation, index) {
+			
+			if (index == 1) {
 				
-				$('#rootwizard').find('.bar').css({
-					width : $percent + '%'
-				});
-				if ($current === 3 ){
-					
-					console.log($('#lastt'));
-					$('#lastt').removeClass('disabled')
-				}
+				return appWizard.step1();
 			}
-		});
-		window.prettyPrint && prettyPrint()
+			if (index == 2) {				
+				return appWizard.step2();	
+			}
+			
+			if (index==3){
+				return appWizard.step3();	
+			}
+			
+		},
+		onTabClick : function (tab, navigation, index,clickedIndex){
+			if(clickedIndex>index){
+				return false;
+			}
+			//console.log(tab);
+			
+		},
+	
+		onTabShow : function(tab, navigation, index) {
+			var $total = navigation.find('li').length;
+			var $current = index + 1;
+			var $percent = ($current / $total) * 100;
+			
+			$('#rootwizard').find('.bar').css({
+				width : $percent + '%'
+			});
+			if ($current === 3 ){
+				
+				console.log($('#lastt'));
+				$('#lastt').removeClass('disabled')
+			}
+		}
 	});
+	window.prettyPrint && prettyPrint()
+});
 </script>
 {% endblock %}

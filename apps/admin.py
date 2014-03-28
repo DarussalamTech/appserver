@@ -42,17 +42,21 @@ class AppAdmin(admin.ModelAdmin):
             print urls
             print "ali"
             my_urls = patterns('',
-                               url(r'^appajax4/$', self.admin_site.admin_view(self.appajax4), name="appajax4"),
-                               url(r'^appajaxstep3/$', self.admin_site.admin_view(self.appajaxstep3), name="appajaxstep3"),
-                               url(r'^appajaxstep2/$', self.admin_site.admin_view(self.appajaxstep2), name="appajaxstep2"),
-                               url(r'^appajax/$', self.admin_site.admin_view(self.appajax), name="appajax"),
                                url(r'^add/$', self.admin_site.admin_view(self.create_app_wizard), name="appwizard"),
+                               url(r'^step1/$', self.admin_site.admin_view(self.step1), name="wizard_step1"),
+                               url(r'^step2/$', self.admin_site.admin_view(self.step2), name="wizard_step2"),
+                               url(r'^step3/$', self.admin_site.admin_view(self.step3), name="wizard_step3"),
+                               url(r'^appajax4/$', self.admin_site.admin_view(self.appajax4), name="appajax4"),
+                               
+                               
                                url(r'^dashboard/$', self.admin_site.admin_view(self.dashboard), name="app-dashboard"),
                                url(r'^advancedSettings/(?P<id>[\w-]+)/$', self.admin_site.admin_view(self.advancedSettings), name="advancedSettings"),
                                )
             my_urls = my_urls + urls
          
             return my_urls
+        
+    # wizard start loading
     def create_app_wizard(self, request,extra_context=None):
         appform1=AppForm1
         appform2=AppForm2
@@ -60,25 +64,18 @@ class AppAdmin(admin.ModelAdmin):
         return render(request,'admin/wizard.html',{'appform1':appform1,'appform2':appform2,'appform3':appform3})
     
 
-    
-    def appajaxstep3(self,request):
-  
-        appform3=AppForm3()
-        
+    #step1
+    def step1(self,request):
+        appform1=AppForm1()
         if request.is_ajax():
-#             form1=
-            form=AppForm(request.POST)
-            if form.is_valid():
-                
-                if  form.save(request) :
-                    messages.success(request,'You App is Created !')
-                    return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3 })
-#                     return HttpResponseRedirect(reverse("admin:index"))
-                else:
-                    return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3 })
-            return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3})    
-        
-    def appajaxstep2(self,request):
+            
+            appform1=AppForm1(request.POST)
+            if appform1.is_valid():
+                return render_to_response("admin/partials/wizardform1.html",{'appform1':appform1} )
+            else: 
+                return render_to_response("admin/partials/wizardform1.html",{'appform1':appform1} )
+    #step2
+    def step2(self,request):
         
         appform2=AppForm2()
         if request.is_ajax():
@@ -91,20 +88,26 @@ class AppAdmin(admin.ModelAdmin):
             else:    
                     return render_to_response("admin/partials/wizardform2.html",{'appform2':appform2}) 
     
-        return render_to_response("admin/partials/wizardform2.html",{'appform2':appform2})  
-    def appajax(self,request):
-        appform1=AppForm1()
-        if request.is_ajax():
-            
-            appform1=AppForm1(request.POST)
-            if appform1.is_valid():
-                return render_to_response("admin/partials/form.html",{'appform1':appform1} )
+        return render_to_response("admin/partials/wizardform2.html",{'appform2':appform2})
    
-#                 appform1.empty_permitted
-#                 if appform1.save():
-#                     return render_to_response("admin/page.html") 
-            else: 
-                return render_to_response("admin/partials/form.html",{'appform1':appform1} )
+    #step3           
+    def step3(self,request):
+  
+        appform3=AppForm3()
+        
+        if request.is_ajax():
+            form=AppForm(request.POST)
+            if form.is_valid():
+                
+                if  form.save(request) :
+                    messages.success(request,'You App is Created !')
+                    return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3 })
+                else:
+                    return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3 })
+            return render_to_response("admin/partials/wizardform3.html",{'appform3':appform3})    
+        
+
+
     def queryset(self, request):
         qs = super(AppAdmin, self).queryset(request)
         if not request.user.is_superuser:

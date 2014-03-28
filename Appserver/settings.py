@@ -64,7 +64,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Using 'mysql' for this tutorial.
         'NAME': 'appserver',                     # Database name.
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'admin',
         'HOST': '',                           # Empty for localhost.
         'PORT': '',                           # Empty string for default.
     }
