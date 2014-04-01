@@ -8,9 +8,10 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        db.add_column('platforms_values', 'app_pluggin',
-                      self.gf('django.db.models.fields.related.ForeignKey')
-                      (blank=True, related_name='appPluggin', null=True,to=orm['apps.AppPlugin']),keep_default=False)  
+      
+        db.add_column('platforms_values', 
+                      'app_pluggin',self.gf('django.db.models.fields.related.ForeignKey')
+                      (blank=True, related_name='appPlugin', null=True,to=orm['apps.AppPlugin']),keep_default=False)  
 
     def backwards(self, orm):
         "Write your backwards methods here."
@@ -44,11 +45,17 @@ class Migration(DataMigration):
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
-         u'apps.category': {
+         u'apps.appplugin': {
+            'Meta': {'object_name': 'AppPlugin'},
+            'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.App']"}),
+            'plugin': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['platforms.Plugin']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        }, 
+        u'apps.category': {
             'Meta': {'object_name': 'Category'},
             'cat_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },      
+        },            
         u'apps.devicetype': {
             'Meta': {'object_name': 'DeviceType'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

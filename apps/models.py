@@ -15,6 +15,14 @@ class DeviceType(models.Model):
     def __unicode__(self):  # Python 3: def __str__(self):
         return self.name
 # class device(models.m):
+
+
+class AppPlatforms(models.Model):
+    app_id=models.ForeignKey('apps.App')
+    plat_id=models.ForeignKey('platforms.Platform')
+    
+    class Meta:
+        db_table = 'apps_app_platforms'
     
 class App(models.Model):
     name=models.CharField(max_length=100,unique=True)
@@ -36,9 +44,12 @@ class App(models.Model):
     
 #         model = App
 
-class AppPlugin():
+class AppPlugin(models.Model):
     app_id=models.ForeignKey(App)  
     plugin_id = models.ForeignKey(Plugin)
+    
+    class Meta:
+        db_table = 'apps_app_plugins'
     
     def __unicode__(self):  # Python 3: def __str__(self):
         return u"%s %s" % (self.plugin_id,self.app_id)

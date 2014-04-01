@@ -10,26 +10,23 @@ class Platform(models.Model):
 class AppPlatform(models.Model):
     app_id=models.ForeignKey('apps.App')
     plat_id=models.ForeignKey(Platform)
+    
 
 #App Plateform Values    
-# class Values(models.Model):
-#     app_platform_id=models.ForeignKey(AppPlatform)
-#     app_secret=models.CharField(max_length=400)
-#     apikey=models.CharField(max_length=200)
-#     def __unicode__(self):  # Python 3: def __str__(self):
-#         return u"%s %s " % (self.app_platform_id, self.apikey)
+class Values(models.Model):
+      app_platform=models.ForeignKey('apps.AppPlatforms')
+      app_secret=models.CharField(max_length=250)
+      app_id=models.CharField(max_length=250)
+      app_pluggin=models.ForeignKey('apps.AppPlugin')
+      def __unicode__(self):  # Python 3: def __str__(self):
+          return u"%s %s " % (self.app_id, self.app_secret)
     
 class Push(models.Model):
     app_platform_id=models.ForeignKey(AppPlatform)
     notification=models.TextField()
     send_date=models.DateTimeField('date published')
 
-class Flurry(models.Model):
-    app_platform_id=models.ForeignKey(AppPlatform)
-    store_id=models.CharField(max_length=400)
-    apikey=models.CharField(max_length=200)
-    def __unicode__(self):  # Python 3: def __str__(self):
-        return u"%s %s " % (self.app_platform_id, self.apikey)
+
 
 class GoogleAnalytics(models.Model):
     app_platform_id=models.ForeignKey(AppPlatform)

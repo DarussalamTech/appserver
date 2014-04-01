@@ -1,129 +1,25 @@
 # -*- coding: utf-8 -*-
 from south.utils import datetime_utils as datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
-
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        # Adding model 'Platform'
-        db.create_table(u'platforms_platform', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+        "Write your forwards methods here."
+        db.create_table('platforms_values', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('app_id', self.gf('django.db.models.fields.CharField')(max_length=250,null=True, blank=True)),
+            ('app_secret', self.gf('django.db.models.fields.CharField')(max_length=250,null=True, blank=True)),
+            ('app_platform', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='appPlatform', null=True,to=orm['apps.AppPlatforms'])),
         ))
-        db.send_create_signal(u'platforms', ['Platform'])
-
-        # Adding model 'AppPlatform'
-        db.create_table(u'platforms_appplatform', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apps.App'])),
-            ('plat_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.Platform'])),
-        ))
-        db.send_create_signal(u'platforms', ['AppPlatform'])
-
-        # Adding model 'Push'
-        db.create_table(u'platforms_push', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('notification', self.gf('django.db.models.fields.TextField')()),
-            ('send_date', self.gf('django.db.models.fields.DateTimeField')()),
-        ))
-        db.send_create_signal(u'platforms', ['Push'])
-
-        # Adding model 'Flurry'
-        db.create_table(u'platforms_flurry', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('store_id', self.gf('django.db.models.fields.CharField')(max_length=400)),
-            ('apikey', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'platforms', ['Flurry'])
-
-        # Adding model 'GoogleAnalytics'
-        db.create_table(u'platforms_googleanalytics', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('tracking_id', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'platforms', ['GoogleAnalytics'])
-
-        # Adding model 'Parse'
-        db.create_table(u'platforms_parse', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('application_id', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('client_key', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'platforms', ['Parse'])
-
-        # Adding model 'Facebook'
-        db.create_table(u'platforms_facebook', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('app_id', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('app_secret', self.gf('django.db.models.fields.CharField')(max_length=300)),
-        ))
-        db.send_create_signal(u'platforms', ['Facebook'])
-
-        # Adding model 'Twitter'
-        db.create_table(u'platforms_twitter', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('app_id', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('app_secret', self.gf('django.db.models.fields.CharField')(max_length=300)),
-        ))
-        db.send_create_signal(u'platforms', ['Twitter'])
-
-        # Adding model 'GooglePlus'
-        db.create_table(u'platforms_googleplus', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('app_platform_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['platforms.AppPlatform'])),
-            ('app_id', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('app_secret', self.gf('django.db.models.fields.CharField')(max_length=300)),
-        ))
-        db.send_create_signal(u'platforms', ['GooglePlus'])
-
-        # Adding model 'Plugin'
-        db.create_table(u'platforms_plugin', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
-        ))
-        db.send_create_signal(u'platforms', ['Plugin'])
-
+        
+        db.send_create_signal(u'platforms', ['Values'])
 
     def backwards(self, orm):
-        # Deleting model 'Platform'
-        db.delete_table(u'platforms_platform')
-
-        # Deleting model 'AppPlatform'
-        db.delete_table(u'platforms_appplatform')
-
-        # Deleting model 'Push'
-        db.delete_table(u'platforms_push')
-
-        # Deleting model 'Flurry'
-        db.delete_table(u'platforms_flurry')
-
-        # Deleting model 'GoogleAnalytics'
-        db.delete_table(u'platforms_googleanalytics')
-
-        # Deleting model 'Parse'
-        db.delete_table(u'platforms_parse')
-
-        # Deleting model 'Facebook'
-        db.delete_table(u'platforms_facebook')
-
-        # Deleting model 'Twitter'
-        db.delete_table(u'platforms_twitter')
-
-        # Deleting model 'GooglePlus'
-        db.delete_table(u'platforms_googleplus')
-
-        # Deleting model 'Plugin'
-        db.delete_table(u'platforms_plugin')
-
+        "Write your backwards methods here."
+        db.delete_table('platforms_values')
 
     models = {
         u'apps.app': {
@@ -142,11 +38,17 @@ class Migration(SchemaMigration):
             'plugins': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['platforms.Plugin']", 'symmetrical': 'False'}),
             'pub_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
+        u'apps.appplatforms': {
+            'Meta': {'object_name': 'AppPlatforms'},
+            'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.App']"}),
+            'platform': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['platforms.Platform']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
         u'apps.category': {
             'Meta': {'object_name': 'Category'},
             'cat_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
+        },       
         u'apps.clients': {
             'Meta': {'object_name': 'Clients'},
             'device_id': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -261,3 +163,4 @@ class Migration(SchemaMigration):
     }
 
     complete_apps = ['platforms']
+    symmetrical = True
